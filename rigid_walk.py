@@ -13,7 +13,7 @@ class BallBalanceEnv(MujocoEnv, utils.EzPickle):
             "rgb_array",
             "depth_array",
         ],
-        "render_fps": 20000,
+        "render_fps": 100,
     }
 
     # set default episode_len for truncate episodes
