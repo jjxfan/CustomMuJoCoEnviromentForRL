@@ -41,4 +41,4 @@ model = mujoco.MjModel.from_xml_path("<PATH OF YOUR XML MODEL FILE>")
 
 4. In the file [learn.py](https://github.com/denisgriaznov/CustomMuJoCoEnviromentForRL/blob/master/learn.py), create an instance of your class (instead of BallBalanceEnv). Then you can choose a different algorithm or use your own, now your environment has all the qualities of the Gym environment.
 
-5. In the file [test.py](https://github.com/denisgriaznov/CustomMuJoCoEnviromentForRL/blob/master/test.py) you can test your agent by specifying the path to the model saved after training. You can also create a GIF from frames (commented code) :)
+5. In the file [test.py](https://github.com/denisgriaznov/CustomMuJoCoEnviromentForRL/blob/master/test.py) you can test your agent by specifying the path to the model saved after training. You can also create a GIF from frames (commented code).
