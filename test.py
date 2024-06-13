@@ -1,5 +1,5 @@
 from stable_baselines3 import SAC
-from ball_balance_env import BallBalanceEnv
+from rigid_walk import BallBalanceEnv
 import cv2
 import imageio
 
