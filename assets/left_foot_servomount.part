@@ -1,0 +1,13 @@
+{
+    "configuration": "default",
+    "documentId": "302c9601274d1e5e16668885",
+    "documentMicroversion": "2e9df128c8c3bad3ecf89e86",
+    "elementId": "e89dbdd9e2c4af21a436423a",
+    "fullConfiguration": "default",
+    "id": "M2ZhCChU8WSHYcdwG",
+    "isStandardContent": false,
+    "name": "left_foot_servomount <1>",
+    "partId": "JFD",
+    "suppressed": false,
+    "type": "Part"
+}

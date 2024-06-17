@@ -1,0 +1,13 @@
+{
+    "configuration": "default",
+    "documentId": "302c9601274d1e5e16668885",
+    "documentMicroversion": "2e9df128c8c3bad3ecf89e86",
+    "elementId": "7d3e0c26e465491ca4beb5b0",
+    "fullConfiguration": "default",
+    "id": "M19tzYkVqNGOc9mrb",
+    "isStandardContent": false,
+    "name": "left_hip_servomount <1>",
+    "partId": "JFD",
+    "suppressed": false,
+    "type": "Part"
+}
