@@ -1,7 +1,7 @@
 import time
 import mujoco.viewer
 
-model = mujoco.MjModel.from_xml_path("assets/RigidBipedal.xml")
+model = mujoco.MjModel.from_xml_path("assets/mjmodel.xml")
 data = mujoco.MjData(model)
 n_steps = 5
 

@@ -20,11 +20,11 @@ class BallBalanceEnv(MujocoEnv, utils.EzPickle):
     def __init__(self, episode_len=500, **kwargs):
         utils.EzPickle.__init__(self, **kwargs)
         # change shape of observation to your observation space size
-        observation_space = Box(low=-np.inf, high=np.inf, shape=(12 ,), dtype=np.float64)
+        observation_space = Box(low=-np.inf, high=np.inf, shape=(18 ,), dtype=np.float64)
         # load your MJCF model with env and choose frames count between actions
         MujocoEnv.__init__(
             self,
-            os.path.abspath("assets/robot.xml"),
+            os.path.abspath("assets/mjmodel.xml"),
             5,
             observation_space=observation_space,
             **kwargs
@@ -32,7 +32,7 @@ class BallBalanceEnv(MujocoEnv, utils.EzPickle):
         self.step_number = 0
         self.episode_len = episode_len
 
-    # determine the reward depending on observation or other properties of the simulation
+    # determine the      depending on observation or other properties of the simulation
     def step(self, a):
         reward = 1.0
         self.do_simulation(a, self.frame_skip)
@@ -67,16 +67,18 @@ class BallBalanceEnv(MujocoEnv, utils.EzPickle):
         #                       np.array(self.data.joint("right_foot").qvel),
         #                       np.array(self.data.joint("left_knee").qpos),
         #                       np.array(self.data.joint("left_knee").qvel)), axis=0)
-        obs = np.concatenate((np.array(self.data.joint("left_foot").qpos),
-                              np.array(self.data.joint("left_foot").qvel),
-                              np.array(self.data.joint("right_foot").qpos),
-                              np.array(self.data.joint("right_foot").qvel),
-                              np.array(self.data.joint("left_knee").qpos),
-                              np.array(self.data.joint("left_knee").qvel),
-                              np.array(self.data.joint("right_knee").qpos),
-                              np.array(self.data.joint("right_knee").qvel),
-                              np.array(self.data.joint("left_hip").qpos),
-                              np.array(self.data.joint("left_hip").qvel),
-                              np.array(self.data.joint("right_hip").qpos),
-                              np.array(self.data.joint("right_hip").qvel)), axis=0)
+        obs = np.concatenate((np.array(self.data.joint("root_joint").qpos[:3]),
+                              np.array(self.data.joint("root_joint").qvel[:3]),
+                              np.array(self.data.joint("left_foot_joint").qpos),
+                              np.array(self.data.joint("left_foot_joint").qvel),
+                              np.array(self.data.joint("right_foot_joint").qpos),
+                              np.array(self.data.joint("right_foot_joint").qvel),
+                              np.array(self.data.joint("left_knee_joint").qpos),
+                              np.array(self.data.joint("left_knee_joint").qvel),
+                              np.array(self.data.joint("right_knee_joint").qpos),
+                              np.array(self.data.joint("right_knee_joint").qvel),
+                              np.array(self.data.joint("left_hip_joint").qpos),
+                              np.array(self.data.joint("left_hip_joint").qvel),
+                              np.array(self.data.joint("right_hip_joint").qpos),
+                              np.array(self.data.joint("right_hip_joint").qvel)), axis=0)
         return obs
