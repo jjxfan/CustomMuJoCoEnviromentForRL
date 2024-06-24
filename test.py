@@ -3,19 +3,19 @@ from rigid_walk import BallBalanceEnv
 import cv2
 import imageio
 
-env = BallBalanceEnv(render_mode="rgb_array")
+env = BallBalanceEnv(render_mode="human")
 model = SAC.load("sac_ball_balance.zip")
 
 obs, info = env.reset()
 frames = []
-for _ in range(500):
+for _ in range(5000):
     action, _states = model.predict(obs, deterministic=True)
     obs, reward, done, truncated, info = env.step(action)
     image = env.render()
-    if _ % 5 == 0:
-        frames.append(image)
-    cv2.imshow("image", image)
-    cv2.waitKey(1)
+    # if _ % 5 == 0:
+    #     frames.append(image)
+    # cv2.imshow("image", image)
+    # cv2.waitKey(1)
     if done or truncated:
         obs, info = env.reset()
 

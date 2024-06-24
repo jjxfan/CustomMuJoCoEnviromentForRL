@@ -1264,3 +1264,75 @@ WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Ti
 Sun Jun 23 15:44:10 2024
 WARNING: Nan, Inf or huge value in QACC at DOF 4. The simulation is unstable. Time = 1.2780.
 
+Sun Jun 23 15:55:40 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 1.6660.
+
+Sun Jun 23 15:56:30 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 3. The simulation is unstable. Time = 1.4760.
+
+Sun Jun 23 15:57:08 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 6. The simulation is unstable. Time = 1.3940.
+
+Sun Jun 23 16:00:35 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 3. The simulation is unstable. Time = 0.7480.
+
+Sun Jun 23 16:01:47 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.1060.
+
+Sun Jun 23 16:04:18 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 1. The simulation is unstable. Time = 2.2200.
+
+Sun Jun 23 16:06:19 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.3360.
+
+Sun Jun 23 16:07:53 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 1.9080.
+
+Sun Jun 23 16:09:22 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.9540.
+
+Sun Jun 23 16:17:20 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.9800.
+
+Sun Jun 23 16:47:50 2024
+ERROR: mjv_updateSceneState: m->nu changed
+
+Sun Jun 23 16:47:54 2024
+ERROR: mjv_updateSceneState: m->nu changed
+
+Sun Jun 23 16:48:30 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 1. The simulation is unstable. Time = 1.0560.
+
+Sun Jun 23 16:48:53 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 10. The simulation is unstable. Time = 1.2560.
+
+Sun Jun 23 16:49:18 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.7200.
+
+Sun Jun 23 16:59:31 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 8. The simulation is unstable. Time = 1.0220.
+
+Sun Jun 23 16:59:49 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 4. The simulation is unstable. Time = 0.8060.
+
+Sun Jun 23 16:59:57 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 1. The simulation is unstable. Time = 0.9460.
+
+Sun Jun 23 17:00:10 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.9360.
+
+Sun Jun 23 17:00:15 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 1.1500.
+
+Sun Jun 23 17:00:16 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 4. The simulation is unstable. Time = 0.8600.
+
+Sun Jun 23 17:00:19 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 4. The simulation is unstable. Time = 0.9860.
+
+Sun Jun 23 17:00:27 2024
+WARNING: Nan, Inf or huge value in QACC at DOF 1. The simulation is unstable. Time = 1.0200.
+
+Mon Jun 24 13:50:36 2024
+ERROR: mjv_updateSceneState: m->nu changed
+
