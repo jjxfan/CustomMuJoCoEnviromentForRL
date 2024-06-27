@@ -4,11 +4,11 @@ import cv2
 import imageio
 
 env = BallBalanceEnv(render_mode="human")
-model = SAC.load("sac_ball_balance.zip")
+model = SAC.load("tmp/best_model.zip")
 
 obs, info = env.reset()
 frames = []
-for _ in range(5000):
+for _ in range(10000):
     action, _states = model.predict(obs, deterministic=True)
     obs, reward, done, truncated, info = env.step(action)
     image = env.render()

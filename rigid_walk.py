@@ -17,7 +17,7 @@ class BallBalanceEnv(MujocoEnv, utils.EzPickle):
     }
 
     # set default episode_len for truncate episodes
-    def __init__(self, episode_len=500, **kwargs):
+    def __init__(self, episode_len=4000, **kwargs):
         utils.EzPickle.__init__(self, **kwargs)
         # change shape of observation to your observation space size
         observation_space = Box(low=-np.inf, high=np.inf, shape=(18 ,), dtype=np.float64)
@@ -32,16 +32,26 @@ class BallBalanceEnv(MujocoEnv, utils.EzPickle):
         self.step_number = 0
         self.episode_len = episode_len
 
-    # determine the      depending on observation or other properties of the simulation
+    def control_cost(self, action):
+        control_cost = 0.1 * np.sum(np.square(self.data.ctrl))
+        return control_cost
+
+    # determine the reward depending on observation or other properties of the simulation
     def step(self, a):
-        reward = 1.0
+        reward = 0.4
         self.do_simulation(a, self.frame_skip)
         self.step_number += 1
+        ctrl_cost = 0.1 * self.control_cost(a)
 
         obs = self._get_obs()
         done = bool(not np.isfinite(obs).all() or (obs[2] < 0))
         truncated = self.step_number > self.episode_len
-        return obs, reward, done, truncated, {}
+        if obs[3] < -0.10:
+            reward = reward + 1
+        if obs[3] > 0:
+            reward = reward - 0.5
+        reward = reward - ctrl_cost
+        return obs, reward - ctrl_cost, done, truncated, {}
 
     # define what should happen when the model is reset (at the beginning of each episode)
     def reset_model(self):

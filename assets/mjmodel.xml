@@ -20,8 +20,8 @@
     <material name="geom" texture="texgeom" texuniform="true"/>
   </asset>
   <worldbody>
-    <geom condim="3" friction="1 .1 .1" material="MatPlane" name="floor" pos="0 0 -0.1" rgba="0.8 0.9 0.8 1" size="20 20 0.125" type="plane"/>
-    <body name="root" pos="0 0 0.2">
+    <geom condim="3" friction="1 .1 .1" material="MatPlane" name="floor" pos="0 0 -0.15" rgba="0.8 0.9 0.8 1" size="20 20 0.125" type="plane"/>
+    <body name="root" pos="0 0 0.1">
       <joint armature="0" damping="0" limited="false" name="root_joint" pos="0 0 0" stiffness="0" type="free"/>
       <geom pos="0.110112 -0.0939423 -0.177698" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.0980392 0.0980392 0.0980392 1" mesh="left_hip_servomount"/>
       <geom pos="0.110112 0.0925647 -0.177698" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.0980392 0.0980392 0.0980392 1" mesh="electronics_mount002"/>
