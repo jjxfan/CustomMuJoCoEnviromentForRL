@@ -54,14 +54,26 @@ class BallBalanceEnv(MujocoEnv, utils.EzPickle):
 
         obs = self._get_obs()
         done = bool(not np.isfinite(obs).all())
-        leftfootID = 26
-        rightfootID = 30
-        leftfootID2 = 31
-        rightfootID2 = 25
-        # for contact in self.data.contact:
-        #     if contact.geom1 != leftfootID and contact.geom2 != leftfootID and contact.geom2 != leftfootID2 and contact.geom2 != leftfootID2:
-        #         if contact.geom1 != rightfootID and contact.geom2 != rightfootID and contact.geom2 != rightfootID2 and contact.geom2 != rightfootID2:
-        #             done = True
+        leftfootID = 10
+        rightfootID = 11
+        leftfootID2 = 15
+        rightfootID2 = 16
+        leftfootID3 = 9
+        rightfootID3 = 14
+        for contact in self.data.contact:
+            # print("Contact 1:")
+            # print(contact.geom1)
+            # print("Contact 2:")
+            # print(contact.geom2)
+            if (contact.geom1 != leftfootID) and (contact.geom2 != leftfootID):
+                if (contact.geom1 != rightfootID) and (contact.geom2 != rightfootID):
+                    if (contact.geom1 != leftfootID2) and (contact.geom2 != leftfootID2):
+                        if (contact.geom1 != rightfootID2) and (contact.geom2 != rightfootID2):
+                            if (contact.geom1 != leftfootID3) and (contact.geom2 != leftfootID3):
+                                if (contact.geom1 != rightfootID3) and (contact.geom2 != rightfootID3):
+                                    done = True
+                            
+                            
         truncated = self.step_number > self.episode_len
         reward = reward + (obs[0] - past_x) * 100
         reward = reward - ctrl_cost

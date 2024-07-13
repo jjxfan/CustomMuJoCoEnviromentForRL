@@ -16,7 +16,7 @@ for _ in range(1000):
     action, _states = model.predict(obs, deterministic=False)
     obs, reward, done, truncated, info = env.step(action)
     env.render()
-    time.sleep(.1)
+    time.sleep(.05)
     # image = env.render()
     # if _ % 5 == 0:
     #     frames.append(image)
