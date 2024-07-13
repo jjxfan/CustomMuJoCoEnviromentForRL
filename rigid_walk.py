@@ -1,12 +1,18 @@
+import mujoco.gl_context
+import mujoco.viewer
 import numpy as np
 from gymnasium import utils
+import mujoco
 from gymnasium.envs.mujoco import MujocoEnv
+from gymnasium.envs.mujoco import mujoco_rendering
 from gymnasium.spaces import Box
+from noise import pnoise2, snoise2
 import os
 
 
 # you can completely modify this class for your MuJoCo environment by following the directions
 class BallBalanceEnv(MujocoEnv, utils.EzPickle):
+
     metadata = {
         "render_modes": [
             "human",
@@ -17,14 +23,14 @@ class BallBalanceEnv(MujocoEnv, utils.EzPickle):
     }
 
     # set default episode_len for truncate episodes
-    def __init__(self, episode_len=10000, **kwargs):
+    def __init__(self, episode_len=1000, **kwargs):
         utils.EzPickle.__init__(self, **kwargs)
         # change shape of observation to your observation space size
-        observation_space = Box(low=-np.inf, high=np.inf, shape=(18 ,), dtype=np.float64)
+        observation_space = Box(low=-np.inf, high=np.inf, shape=(49, ), dtype=np.float64)
         # load your MJCF model with env and choose frames count between actions
         MujocoEnv.__init__(
             self,
-            os.path.abspath("assets/mjmodel.xml"),
+            os.path.abspath("assets/ramp.xml"),
             5,
             observation_space=observation_space,
             **kwargs
@@ -38,31 +44,61 @@ class BallBalanceEnv(MujocoEnv, utils.EzPickle):
 
     # determine the reward depending on observation or other properties of the simulation
     def step(self, a):
-        reward = 1
+        past_obs = self._get_obs()
+        reward = 0.2
+        past_x = past_obs[0]
+
         self.do_simulation(a, self.frame_skip)
         self.step_number += 1
-        ctrl_cost = 0.1 * self.control_cost(a)
+        ctrl_cost = 0.05 * self.control_cost(a)
 
         obs = self._get_obs()
-        done = bool(not np.isfinite(obs).all() or (obs[2] < 0))
+        done = bool(not np.isfinite(obs).all())
+        leftfootID = 26
+        rightfootID = 30
+        leftfootID2 = 31
+        rightfootID2 = 25
+        # for contact in self.data.contact:
+        #     if contact.geom1 != leftfootID and contact.geom2 != leftfootID and contact.geom2 != leftfootID2 and contact.geom2 != leftfootID2:
+        #         if contact.geom1 != rightfootID and contact.geom2 != rightfootID and contact.geom2 != rightfootID2 and contact.geom2 != rightfootID2:
+        #             done = True
         truncated = self.step_number > self.episode_len
-        reward = reward + obs[3] * 0.1
+        reward = reward + (obs[0] - past_x) * 100
         reward = reward - ctrl_cost
-        return obs, reward - ctrl_cost, done, truncated, {}
+        return obs, reward, done, truncated, {}
+    
+    def gen_hfield_perlin(self, num_rows, num_cols, octaves):
+        freq = 16.0 * octaves
+        hfield = np.zeros((num_rows, num_cols))
+        for y in range(num_rows):
+            for x in range(num_cols):
+                hfield[x, y] = int(snoise2(x / freq, y / freq, octaves) * 127.0 + 128.0)
+        hfield = (hfield-np.min(hfield))/(np.max(hfield)-np.min(hfield)) * 1
+        return hfield
 
     # define what should happen when the model is reset (at the beginning of each episode)
     def reset_model(self):
+        
         self.step_number = 0
 
         # for example, noise is added to positions and velocities
-        qpos = self.init_qpos + self.np_random.uniform(
-            size=self.model.nq, low=-0.01, high=0.01
-        )
-        qvel = self.init_qvel + self.np_random.uniform(
-            size=self.model.nv, low=-0.01, high=0.01
-        )
+        qpos = self.init_qpos 
+        # + self.np_random.uniform(
+        #     size=self.model.nq, low=-0.01, high=0.01
+        # )
+        qvel = self.init_qvel
+        # + self.np_random.uniform(
+        #     size=self.model.nv, low=-0.01, high=0.01
+        # )
         self.set_state(qpos, qvel)
+        num_rows = self.model.hfield_nrow[0]
+        num_cols = self.model.hfield_ncol[0]
+        new_hfield = self.gen_hfield_perlin(num_rows, num_cols, 10)
+        self.model.hfield_data = new_hfield.flatten()
         return self._get_obs()
+    
+    
+
 
     # determine what should be added to the observation
     # for example, the velocities and positions of various joints can be obtained through their names, as stated here
@@ -74,18 +110,22 @@ class BallBalanceEnv(MujocoEnv, utils.EzPickle):
         #                       np.array(self.data.joint("right_foot").qvel),
         #                       np.array(self.data.joint("left_knee").qpos),
         #                       np.array(self.data.joint("left_knee").qvel)), axis=0)
-        obs = np.concatenate((np.array(self.data.joint("root_joint").qpos[:3]),
-                              np.array(self.data.joint("root_joint").qvel[:3]),
-                              np.array(self.data.joint("left_foot_joint").qpos),
-                              np.array(self.data.joint("left_foot_joint").qvel),
-                              np.array(self.data.joint("right_foot_joint").qpos),
-                              np.array(self.data.joint("right_foot_joint").qvel),
-                              np.array(self.data.joint("left_knee_joint").qpos),
-                              np.array(self.data.joint("left_knee_joint").qvel),
-                              np.array(self.data.joint("right_knee_joint").qpos),
-                              np.array(self.data.joint("right_knee_joint").qvel),
-                              np.array(self.data.joint("left_hip_joint").qpos),
-                              np.array(self.data.joint("left_hip_joint").qvel),
-                              np.array(self.data.joint("right_hip_joint").qpos),
-                              np.array(self.data.joint("right_hip_joint").qvel)), axis=0)
+        base_orient = np.array(self.data.joint("root_joint").qpos[-4:])
+
+        obs = np.concatenate((np.array(self.data.joint("root_joint").qpos),
+                              np.array(self.data.joint("root_joint").qvel),
+                              np.array(self.data.qfrc_actuator),
+                              base_orient - np.array(self.data.joint("left_foot_joint").qpos[-4:]),
+                            #   np.array(self.data.joint("left_foot_joint").qvel),
+                              base_orient - np.array(self.data.joint("right_foot_joint").qpos[-4:]),
+                            #   np.array(self.data.joint("right_foot_joint").qvel),
+                              base_orient - np.array(self.data.joint("left_knee_joint").qpos[-4:]),
+                            #   np.array(self.data.joint("left_knee_joint").qvel),
+                              base_orient - np.array(self.data.joint("right_knee_joint").qpos[-4:]),
+                            #   np.array(self.data.joint("right_knee_joint").qvel),
+                              base_orient - np.array(self.data.joint("left_hip_joint").qpos[-4:]),
+                            #   np.array(self.data.joint("left_hip_joint").qvel),
+                              base_orient - np.array(self.data.joint("right_hip_joint").qpos[-4:]),
+                            #   np.array(self.data.joint("right_hip_joint").qvel)
+                              ), axis=0)
         return obs

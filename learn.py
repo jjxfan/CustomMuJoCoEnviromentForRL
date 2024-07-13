@@ -71,6 +71,6 @@ check_env(env)
 # learning with tensorboard logging and saving model
 model = SAC("MlpPolicy", env, verbose=1, tensorboard_log="./sac_ball_balance_tensorboard/")
 callback = SaveOnBestTrainingRewardCallback(check_freq=1000, log_dir=log_dir)
-model.learn(total_timesteps=5000000, log_interval=4, callback=callback)
+model.learn(total_timesteps=20000000, log_interval=4, callback=callback)
 model.save("sac_ball_balance")
 
