@@ -7,6 +7,7 @@ from gymnasium.envs.mujoco import MujocoEnv
 from gymnasium.envs.mujoco import mujoco_rendering
 from gymnasium.spaces import Box
 from noise import pnoise2, snoise2
+import time
 import os
 
 
@@ -51,6 +52,14 @@ class BallBalanceEnv(MujocoEnv, utils.EzPickle):
             else:
                 reward = reward - bonus
         return reward 
+    
+    
+    def apply_random_forces(self, force_magnitude):
+        body_id = 2
+        force = np.random.uniform(-force_magnitude, force_magnitude, size=3)
+        self.data.xfrc_applied[body_id][:3] = force
+
+            
 
     # determine the reward depending on observation or other properties of the simulation
     def step(self, a):
@@ -106,6 +115,11 @@ class BallBalanceEnv(MujocoEnv, utils.EzPickle):
         reward = reward + (past_x - obs[0]) * 200
         reward = reward + self.data.joint("root_joint").qpos[2] * 0.75
         reward = reward - ctrl_cost
+
+        if np.random.uniform(0, 1) < 0.01:
+            self.apply_random_forces(10.0)
+        else:
+            self.data.xfrc_applied[2][:3] = np.array([0, 0, 0])
         return obs, reward, done, truncated, {}
     
 
@@ -126,19 +140,18 @@ class BallBalanceEnv(MujocoEnv, utils.EzPickle):
         self.step_number = 0
 
         # for example, noise is added to positions and velocities
-        qpos = self.init_qpos 
-        # + self.np_random.uniform(
-        #     size=self.model.nq, low=-0.01, high=0.01
-        # )
-        qvel = self.init_qvel
-        # + self.np_random.uniform(
-        #     size=self.model.nv, low=-0.01, high=0.01
-        # )
+        qpos = self.init_qpos + self.np_random.uniform(
+            size=self.model.nq, low=-0.01, high=0.01
+            )
+        qvel = self.init_qvel + self.np_random.uniform(
+            size=self.model.nv, low=-0.01, high=0.01
+            )
         self.set_state(qpos, qvel)
         num_rows = self.model.hfield_nrow[0]
         num_cols = self.model.hfield_ncol[0]
         new_hfield = self.gen_hfield_perlin(num_rows, num_cols, 10)
         self.model.hfield_data = new_hfield.flatten()
+        self.data.xfrc_applied[0][:3] = 0
         return self._get_obs()
     
     

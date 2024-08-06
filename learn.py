@@ -7,8 +7,27 @@ from stable_baselines3.common.vec_env import DummyVecEnv, VecCheckNan
 import torch as th
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.results_plotter import load_results, ts2xy, plot_results
-from stable_baselines3.common.callbacks import BaseCallback
-#th.autograd.set_detect_anomaly(True)
+from stable_baselines3.common.callbacks import BaseCallback, CallbackList
+#th.autograd.set_detect_anomaly(True
+
+
+class RenderCallback(BaseCallback):
+    """
+    Custom callback for rendering the environment during training.
+    """
+    def __init__(self, render_freq: int, verbose=0):
+        super(RenderCallback, self).__init__(verbose)
+        self.render_freq = render_freq
+
+    def _on_step(self) -> bool:
+        # Render the environment every `render_freq` steps
+        if self.n_calls % self.render_freq == 0:
+            self.training_env.render()
+        return True
+
+
+
+
 
 class SaveOnBestTrainingRewardCallback(BaseCallback):
     """
@@ -70,7 +89,10 @@ check_env(env)
 
 # learning with tensorboard logging and saving model
 model = SAC("MlpPolicy", env, verbose=1, tensorboard_log="./sac_ball_balance_tensorboard/")
-callback = SaveOnBestTrainingRewardCallback(check_freq=1000, log_dir=log_dir)
+render_freq = 1
+render_callback = RenderCallback(render_freq=render_freq)
+best_callback = SaveOnBestTrainingRewardCallback(check_freq=1000, log_dir=log_dir)
+callback = CallbackList([best_callback])
 model.learn(total_timesteps=20000000, log_interval=4, callback=callback)
 model.save("sac_ball_balance")
 
