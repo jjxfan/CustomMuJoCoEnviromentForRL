@@ -1336,3 +1336,15 @@ WARNING: Nan, Inf or huge value in QACC at DOF 1. The simulation is unstable. Ti
 Mon Jun 24 13:50:36 2024
 ERROR: mjv_updateSceneState: m->nu changed
 
+Mon Jul 15 10:36:12 2024
+ERROR: mjv_updateSceneState: m->nu changed
+
+Mon Jul 15 10:37:20 2024
+ERROR: mjv_updateSceneState: m->nu changed
+
+Mon Jul 15 23:50:43 2024
+ERROR: mjv_updateSceneState: m->nu changed
+
+Mon Jul 15 23:51:39 2024
+ERROR: mjv_updateSceneState: m->nu changed
+

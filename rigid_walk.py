@@ -41,16 +41,34 @@ class BallBalanceEnv(MujocoEnv, utils.EzPickle):
     def control_cost(self, action):
         control_cost = 0.1 * np.sum(np.square(self.data.ctrl))
         return control_cost
+    
+    def rot_change_rew(self, past, cur):
+        reward = 0
+        bonus = 0.1
+        for i in range(len(past)):
+            if past[i] * cur[i] >= 0:
+                reward = reward + bonus
+            else:
+                reward = reward - bonus
+        return reward 
 
     # determine the reward depending on observation or other properties of the simulation
     def step(self, a):
         past_obs = self._get_obs()
-        reward = 0.2
+        reward = 0
         past_x = past_obs[0]
+        past_rot_vel = np.concatenate((
+        np.array(self.data.joint("left_foot_joint").qvel),
+        np.array(self.data.joint("right_foot_joint").qvel),
+        np.array(self.data.joint("left_knee_joint").qvel),
+        np.array(self.data.joint("right_knee_joint").qvel),
+        np.array(self.data.joint("left_hip_joint").qvel),
+        np.array(self.data.joint("right_hip_joint").qvel)), axis=0)
+        
 
         self.do_simulation(a, self.frame_skip)
         self.step_number += 1
-        ctrl_cost = 0.05 * self.control_cost(a)
+        ctrl_cost = 0.025 * self.control_cost(a)
 
         obs = self._get_obs()
         done = bool(not np.isfinite(obs).all())
@@ -72,20 +90,34 @@ class BallBalanceEnv(MujocoEnv, utils.EzPickle):
                             if (contact.geom1 != leftfootID3) and (contact.geom2 != leftfootID3):
                                 if (contact.geom1 != rightfootID3) and (contact.geom2 != rightfootID3):
                                     done = True
-                            
+
+
+        cur_rot_vel = np.concatenate((
+        np.array(self.data.joint("left_foot_joint").qvel),
+        np.array(self.data.joint("right_foot_joint").qvel),
+        np.array(self.data.joint("left_knee_joint").qvel),
+        np.array(self.data.joint("right_knee_joint").qvel),
+        np.array(self.data.joint("left_hip_joint").qvel),
+        np.array(self.data.joint("right_hip_joint").qvel)), axis=0)
+        reward = reward + self.rot_change_rew(past_rot_vel, cur_rot_vel)
+        # print(self.data.joint("root_joint").qpos[2] * 0.5)
                             
         truncated = self.step_number > self.episode_len
-        reward = reward + (obs[0] - past_x) * 100
+        reward = reward + (past_x - obs[0]) * 200
+        reward = reward + self.data.joint("root_joint").qpos[2] * 0.75
         reward = reward - ctrl_cost
         return obs, reward, done, truncated, {}
     
+
+     
+
     def gen_hfield_perlin(self, num_rows, num_cols, octaves):
         freq = 16.0 * octaves
         hfield = np.zeros((num_rows, num_cols))
         for y in range(num_rows):
             for x in range(num_cols):
                 hfield[x, y] = int(snoise2(x / freq, y / freq, octaves) * 127.0 + 128.0)
-        hfield = (hfield-np.min(hfield))/(np.max(hfield)-np.min(hfield)) * 1
+        hfield = (hfield-np.min(hfield))/(np.max(hfield)-np.min(hfield))
         return hfield
 
     # define what should happen when the model is reset (at the beginning of each episode)

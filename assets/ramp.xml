@@ -18,16 +18,16 @@
     <texture builtin="checker" height="100" name="texplane" rgb1="0 0 0" rgb2="0.8 0.8 0.8" type="2d" width="100"/>
     <material name="MatPlane" reflectance="0.5" shininess="1" specular="1" texrepeat="60 60" texture="texplane"/>
     <material name="geom" texture="texgeom" texuniform="true"/>
-    <hfield name='hf1' nrow='200' ncol='200' size="5 5 .2 .1"/>
+    <hfield name='hf1' nrow='1000' ncol='1000' size="25 25 .2 .1"/>
   </asset>
   <worldbody>
     <body name="floor" pos="0 0 0">
-      <geom name='hfield1' pos='0.0 0 -0.1' hfield='hf1' type='hfield' condim='3' conaffinity='15' friction="1 .1 .1"/> 
+      <geom name='hfield1' pos='0.0 0 -0.1' hfield='hf1' type='hfield' condim='3' conaffinity='15' friction="2 .1 .1"/> 
     </body>
     <body name="root" pos="0 0 0.4">
       <joint armature="0" damping="0" limited="false" name="root_joint" pos="0 0 0" stiffness="0" type="free"/>
       <geom pos="0.110112 -0.0939423 -0.177698" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.0980392 0.0980392 0.0980392 1" mesh="left_hip_servomount"/>
-      <geom pos="0.110112 0.0925647 -0.177698" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.0980392 0.0980392 0.0980392 1" mesh="electronics_mount002"/>
+      <geom pos="0.110112 0.0925647 -0.177698" density="2000" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.0980392 0.0980392 0.0980392 1" mesh="electronics_mount002"/>
       <geom pos="0.110112 0.0925647 -0.177698" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.0980392 0.0980392 0.0980392 1" mesh="bridge"/>
       <geom pos="0.110112 0.0939387 -0.177698" quat="0.707107 0.707107 0 0" type="mesh" rgba="0.0980392 0.0980392 0.0980392 1" mesh="right_hip"/>
       <geom pos="-0.00505 -0.0405018 -0.069367" quat="0.707107 0 -0.707107 0" type="mesh" rgba="1 1 1 1" mesh="servo"/>
@@ -44,7 +44,7 @@
           <body name="right_foot" pos="0.05683 0.00065 -0.0591666" quat="0 -0.966391 0.257078 0">
             <inertial pos="0.00688821 0.00770729 -0.0277825" quat="0.542344 0.798817 -0.199621 -0.167051" mass="0.104274" diaginertia="3.48797e-05 2.20392e-05 2.15597e-05"/>
             <joint name="right_foot_joint" pos="0 0 0" axis="0 0 1" damping="0.1" range="-45 45"/>
-            <geom pos="0.0261343 -0.0471065 -0.000859459" type="mesh" rgba="0.0980392 0.0980392 0.0980392 1" mesh="right_foot" name="right_foot_servomount"/>
+            <geom pos="0.0261343 -0.0471065 -0.000859459" friction="1 0.005 0.0001" type="mesh" rgba="0.0980392 0.0980392 0.0980392 1" mesh="right_foot" name="right_foot_servomount"/>
             <geom pos="0.00571293 0.00859505 -0.0289" quat="0.612372 -0.612372 -0.353553 0.353553" type="mesh" rgba="1 1 1 1" mesh="servo"/>
           </body>
         </body>
@@ -61,7 +61,7 @@
           <body name="left_foot" pos="0.05683 -0.000650001 -0.0591666" quat="0 -0.161911 0.986805 0">
             <inertial pos="-0.00541766 0.00871073 -0.0277825" quat="0.543596 0.820645 0.131215 0.117592" mass="0.104274" diaginertia="3.48806e-05 2.2053e-05 2.15468e-05"/>
             <joint name="left_foot_joint" pos="0 0 0" axis="0 0 1" damping="0.1" range="-45 45"/>
-            <geom pos="0.180524 0.068949 -0.000859459" quat="0 1 0 0" type="mesh" rgba="0.0980392 0.0980392 0.0980392 1" mesh="left_foot_servomount" name="left_foot_servomount"/>
+            <geom pos="0.180524 0.068949 -0.000859459" friction="1 0.005 0.0001" quat="0 1 0 0" type="mesh" rgba="0.0980392 0.0980392 0.0980392 1" mesh="left_foot_servomount" name="left_foot_servomount"/>
             <geom pos="-0.0040994 0.00936255 -0.0289" quat="0.40558 -0.40558 -0.579228 0.579228" type="mesh" rgba="1 1 1 1" mesh="servo"/>
           </body>
         </body>
@@ -71,8 +71,8 @@
   <actuator>
     <general name="act_left_hip_joint" joint="left_hip_joint" ctrlrange="-1 1" gainprm="1 0 0" ctrllimited="true"/>
     <general name="act_right_hip_joint" joint="right_hip_joint" ctrlrange="-1 1" gainprm="1 0 0" ctrllimited="true"/>
-    <general name="act_left_knee_joint" joint="left_knee_joint" ctrlrange="-1 1" gainprm="1 0 0" ctrllimited="true"/>
-    <general name="act_right_knee_joint" joint="right_knee_joint" ctrlrange="-1 1" gainprm="1 0 0" ctrllimited="true"/>
+    <general name="act_left_knee_joint" joint="left_knee_joint" ctrlrange="-1 1" gainprm="0.5 0 0" ctrllimited="true"/>
+    <general name="act_right_knee_joint" joint="right_knee_joint" ctrlrange="-1 1" gainprm="0.5 0 0" ctrllimited="true"/>
     <general name="act_left_foot_joint" joint="left_foot_joint" ctrlrange="-1 1" gainprm="0.5 0 0" ctrllimited="true"/>
     <general name="act_right_foot_joint" joint="right_foot_joint" ctrlrange="-1 1" gainprm="0.5 0 0" ctrllimited="true"/>
   </actuator>
